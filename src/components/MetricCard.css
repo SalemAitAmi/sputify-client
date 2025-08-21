@@ -1,0 +1,116 @@
+.metric-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.metric-card:hover {
+  background-color: var(--spotify-light-gray);
+  border-color: rgba(29, 185, 84, 0.3);
+}
+
+.metric-card.dragging {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  cursor: grabbing;
+}
+
+.metric-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.metric-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--text-subdued);
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.drag-handle:hover {
+  color: var(--text-secondary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.metric-card-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.metric-card-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.metric-card-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.metric-card-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
+}
+
+.metric-card-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-subdued);
+}
+
+.metric-card-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 16px;
+  color: var(--text-secondary);
+}
+
+.load-more-trigger {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.loading-spinner.small {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .metric-card {
+    padding: 16px;
+  }
+
+  .metric-card-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+
+  .metric-card-title {
+    font-size: 1.125rem;
+  }
+}

@@ -1,0 +1,114 @@
+/* Grid System Overflow Prevention */
+
+/* Base grid containers */
+.tracks-container,
+.artists-container,
+.albums-container,
+.podcasts-container,
+.songs-container,
+.playlists-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Grid with minmax to prevent overflow */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 3), minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Force grid children to respect boundaries */
+.item-grid > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Ensure item rows don't overflow */
+.item-row {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Item details must also respect boundaries */
+.item-details {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* AutoScroll containers must have defined width */
+.auto-scroll-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Specific 1-column layout */
+[style*="--columns: 1"] .item-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Specific 2-column layout */
+[style*="--columns: 2"] .item-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Specific 3-column layout */
+[style*="--columns: 3"] .item-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Specific 4-column layout */
+[style*="--columns: 4"] .item-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Specific 5-column layout */
+[style*="--columns: 5"] .item-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* Recent item cards */
+.recent-item-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Ensure proper flex item sizing */
+.item-image {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+}
+
+/* Playlist items special handling */
+.playlist-row {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Prevent text from breaking layout */
+.item-name,
+.item-subtitle,
+.item-link {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

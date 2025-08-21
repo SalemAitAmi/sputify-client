@@ -1,0 +1,48 @@
+.auto-scroll-container {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.auto-scroll-text {
+  white-space: nowrap;
+  display: inline-block;
+  min-width: 100%;
+}
+
+.auto-scroll-text.scrolling {
+  animation: auto-scroll 8s linear infinite;
+  animation-delay: 2s;
+}
+
+.auto-scroll-text.scrolling.paused {
+  animation-play-state: paused;
+}
+
+@keyframes auto-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(var(--scroll-distance, -50%));
+  }
+  100% {
+    transform: translateX(var(--scroll-distance, -50%));
+  }
+}
+
+/* Responsive animation adjustments */
+@media (max-width: 768px) {
+  .auto-scroll-text.scrolling {
+    animation-duration: 6s;
+  }
+}
+
+@media (max-width: 480px) {
+  .auto-scroll-text.scrolling {
+    animation-duration: 5s;
+  }
+}

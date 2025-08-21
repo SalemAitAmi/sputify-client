@@ -1,0 +1,124 @@
+.library-page {
+  min-height: 100vh;
+}
+
+/* Tabs Container (shared with RecentlyPlayed) */
+.tabs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.tabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tabs::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
+}
+
+/* Universal Grid System with Overflow Prevention */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 3), minmax(0, 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.songs-container .item-grid {
+  grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr));
+}
+
+/* Force items to respect grid boundaries */
+.item-grid > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.recent-item-card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Fixed sizes based on column count */
+  width: 100%;
+  min-height: 120px;
+}
+
+.recent-item-card:hover {
+  background-color: var(--spotify-light-gray);
+  transform: translateY(-2px);
+}
+
+/* Ensure proper sizing within grid */
+.songs-container,
+.albums-container,
+.artists-container,
+.playlists-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.item-grid .item-row {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.save-info {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.saved-date {
+  font-size: 12px;
+  color: var(--text-subdued);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .tabs-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .tabs {
+    gap: 4px;
+    padding-bottom: 0;
+  }
+
+  .tab {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(var(--columns, 1), 1fr);
+  }
+
+  .songs-container .item-grid {
+    grid-template-columns: 1fr;
+  }
+}

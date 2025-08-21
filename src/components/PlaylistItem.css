@@ -1,0 +1,60 @@
+/* Playlist Row Specific Styles */
+.playlist-row {
+  padding: 12px;
+}
+
+.playlist-cover {
+  flex-shrink: 0;
+}
+
+.playlist-image-placeholder {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--spotify-gray) 0%, var(--spotify-light-gray) 100%);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-subdued);
+}
+
+/* Playlist Meta */
+.playlist-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.track-count {
+  font-size: 12px;
+  color: var(--text-subdued);
+}
+
+.playlist-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.playlist-badge.collaborative {
+  background-color: rgba(29, 185, 84, 0.2);
+  color: var(--spotify-green);
+}
+
+.playlist-badge.private {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .track-count,
+  .playlist-badge {
+    font-size: 10px;
+  }
+}
