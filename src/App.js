@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { SpotifyProvider } from './contexts/SpotifyContext';
 import { AuthProvider } from './contexts/AuthContext';
 import Layout from './components/Layout';
