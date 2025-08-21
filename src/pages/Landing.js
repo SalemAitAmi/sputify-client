@@ -5,8 +5,7 @@ import './Landing.css';
 const Landing = () => {
   const handleLogin = () => {
     // Use environment variable or fallback to production server
-    const API_BASE_URL = process.env.API_URL;
-    const authUrl = `${API_BASE_URL}/api/login`;
+    const authUrl = 'https://sputify.app/api/login';
     
     // For GitHub Pages, we need to specify the full redirect URL
     const redirectTo = window.location.origin;

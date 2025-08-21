@@ -1,9 +1,6 @@
-// Get API base URL from environment or use production server
-const API_BASE_URL = process.env.API_URL;
-
 export const refreshToken = async (refreshToken) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/refresh_token?refresh_token=${encodeURIComponent(refreshToken)}`);
+    const response = await fetch(`https://sputify.app/api/refresh_token?refresh_token=${encodeURIComponent(refreshToken)}`);
     
     if (!response.ok) {
       throw new Error('Failed to refresh token');
@@ -31,5 +28,5 @@ export const login = () => {
     'user-follow-modify'
   ].join(' ');
   
-  window.location.href = `${API_BASE_URL}/api/login?redirectTo=${encodeURIComponent(redirectTo)}&scope=${encodeURIComponent(scopes)}`;
+  window.location.href = `https://sputify.app/api/login?redirectTo=${encodeURIComponent(redirectTo)}&scope=${encodeURIComponent(scopes)}`;
 };

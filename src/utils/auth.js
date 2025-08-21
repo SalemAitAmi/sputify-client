@@ -1,6 +1,3 @@
-// Get API base URL from environment or use production server
-const API_BASE_URL = process.env.API_URL;
-
 // Parse hash parameters from URL
 export const getHashParams = () => {
   const hashParams = {};
@@ -25,7 +22,7 @@ export const clearHashParams = () => {
 
 // Refresh token API call
 export const refreshToken = async (refreshToken) => {
-  const response = await fetch(`${API_BASE_URL}/api/refresh_token?refresh_token=${encodeURIComponent(refreshToken)}`);
+  const response = await fetch(`https://sputify.app/api/refresh_token?refresh_token=${encodeURIComponent(refreshToken)}`);
   
   if (!response.ok) {
     throw new Error('Failed to refresh token');
