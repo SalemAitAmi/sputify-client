@@ -8,7 +8,7 @@ const Landing = () => {
     const authUrl = 'https://sputify.app/api/login';
     
     // For GitHub Pages, we need to specify the full redirect URL
-    const redirectTo = `${window.location.origin}${window.location.pathname}`;
+    const redirectTo = 'https://salemaitami.github.io/sputify-client/';
     const scopes = 'user-read-private user-read-email user-top-read user-read-recently-played playlist-read-private user-follow-read user-read-playback-state user-library-read user-library-modify user-follow-modify';
     
     window.location.href = `${authUrl}?redirectTo=${encodeURIComponent(redirectTo)}&scope=${encodeURIComponent(scopes)}`;
