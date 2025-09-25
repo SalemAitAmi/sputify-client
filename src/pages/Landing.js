@@ -5,7 +5,7 @@ import './Landing.css';
 const Landing = () => {
   const handleLogin = () => {
     // Use environment variable or fallback to production server
-    const authUrl = `${process.env.REACT_APP_AUTH_SERVER_URL}/api/login`;
+    const authUrl = `${process.env.AUTH_SERVER_URL}/api/login`;
     
     // For GitHub Pages, we need to specify the full redirect URL
     const redirectTo = process.env.FRONTEND_URL;
