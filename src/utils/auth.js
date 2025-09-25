@@ -22,7 +22,7 @@ export const clearHashParams = () => {
 
 // Refresh token API call
 export const refreshToken = async (refreshToken) => {
-  const response = await fetch(`${process.env.AUTH_SERVER_URL}/refresh_token?refresh_token=${encodeURIComponent(refreshToken)}`);
+  const response = await fetch(`${process.env.REACT_APP_AUTH_SERVER_URL}/refresh_token?refresh_token=${encodeURIComponent(refreshToken)}`);
   
   if (!response.ok) {
     throw new Error('Failed to refresh token');
