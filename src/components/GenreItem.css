@@ -1,0 +1,81 @@
+.genre-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.genre-item:hover {
+  background-color: var(--hover-bg, rgba(255, 255, 255, 0.05));
+}
+
+.genre-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.genre-name {
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.genre-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: 2rem;
+  opacity: 0.8;
+}
+
+.genre-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+}
+
+.genre-stat-icon {
+  color: var(--accent-color, #1db954);
+  opacity: 0.7;
+}
+
+.genre-stat-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.genre-stat-label {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.genre-stat-divider {
+  width: 1px;
+  height: 16px;
+  background-color: var(--border-color, rgba(255, 255, 255, 0.1));
+  margin: 0 0.25rem;
+}
+
+/* Remove old percentage bar styles if they exist */
+.genre-bar-container,
+.genre-bar,
+.genre-percentage {
+  display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .genre-stats {
+    padding-left: 1.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .genre-stat-icon {
+    width: 12px;
+    height: 12px;
+  }
+}

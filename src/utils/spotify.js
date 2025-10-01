@@ -1,52 +1,67 @@
-// Calculate top genres from tracks and artists with weighted scoring
-export const calculateTopGenres = (tracks = [], artists = [], useWeightedScoring = true) => {
-  const genreCount = {};
-  let totalSamples = 0;
+// Calculate top genres based on simple count with proper ranking
+export const calculateTopGenres = (tracks = [], artists = [], additionalArtists = []) => {
+  const genreData = new Map();
   
-  // Helper function to get multiplier based on index
-  const getMultiplier = (index) => {
-    if (!useWeightedScoring) return 1;
-    const tier = Math.floor(index / 50);
-    const multiplier = Math.max(1 - (tier * 0.05), 0.5);
-    return multiplier;
-  };
+  // Combine top artists with additional fetched artists
+  const allArtists = [...artists, ...additionalArtists];
+  const artistMap = new Map(allArtists.map(a => [a.id, a]));
   
-  // Count genres from artists with weighted scoring
-  artists.forEach((artist, index) => {
-    const multiplier = getMultiplier(index);
-    totalSamples += multiplier;
-    
+  // Count genres from all artists
+  allArtists.forEach(artist => {
     if (artist.genres && Array.isArray(artist.genres)) {
       artist.genres.forEach(genre => {
-        genreCount[genre] = (genreCount[genre] || 0) + multiplier;
+        if (!genreData.has(genre)) {
+          genreData.set(genre, {
+            name: genre,
+            fromTracks: new Set(),
+            fromArtists: new Set()
+          });
+        }
+        const data = genreData.get(genre);
+        data.fromArtists.add(artist.id);
       });
     }
   });
   
-  // Count genres from track artists with weighted scoring
-  tracks.forEach((track, index) => {
-    const multiplier = getMultiplier(index);
-    totalSamples += multiplier;
-    
+  // Process tracks to associate them with genres through their artists
+  tracks.forEach(track => {
     if (track.artists && Array.isArray(track.artists)) {
-      track.artists.forEach(artist => {
-        if (artist.genres && Array.isArray(artist.genres)) {
-          artist.genres.forEach(genre => {
-            genreCount[genre] = (genreCount[genre] || 0) + multiplier;
+      track.artists.forEach(trackArtist => {
+        // Find the full artist data
+        const fullArtist = artistMap.get(trackArtist.id);
+        if (fullArtist && fullArtist.genres) {
+          fullArtist.genres.forEach(genre => {
+            const data = genreData.get(genre);
+            if (data) {
+              data.fromTracks.add(track.id);
+            }
           });
         }
       });
     }
   });
   
-  // Convert to array and sort
-  const genreArray = Object.entries(genreCount)
-    .map(([name, count]) => ({ 
-      name, 
-      count, 
-      percentage: totalSamples > 0 ? (count / totalSamples) * 100 : 0 
-    }))
-    .sort((a, b) => b.count - a.count);
+  // Convert to array and calculate final metrics
+  const genreArray = Array.from(genreData.values())
+    .map(data => {
+      const trackCount = data.fromTracks.size;
+      const artistCount = data.fromArtists.size;
+      // Calculate a composite score for ranking
+      // Weight tracks slightly higher as they represent actual listening
+      const score = (trackCount * 1.5) + artistCount;
+      return {
+        name: data.name,
+        trackCount,
+        artistCount,
+        score
+      };
+    })
+    .sort((a, b) => {
+      // Sort by score, then by track count, then by artist count
+      if (b.score !== a.score) return b.score - a.score;
+      if (b.trackCount !== a.trackCount) return b.trackCount - a.trackCount;
+      return b.artistCount - a.artistCount;
+    });
   
   return genreArray;
 };

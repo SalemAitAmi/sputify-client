@@ -1,17 +1,47 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Music, BarChart3, TrendingUp, Sparkles } from 'lucide-react';
+import { needsTokenRefresh, refreshToken, isAuthenticated } from '../utils/auth';
 import './Landing.css';
 
 const Landing = () => {
+  const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    checkExistingAuth();
+  }, []);
+
+  const checkExistingAuth = async () => {
+    try {
+      // Check if user has valid tokens
+      if (isAuthenticated()) {
+        // Redirect to stats if already authenticated
+        window.location.href = '/#/stats';
+        return;
+      }
+      
+      // Check if token needs refresh
+      const tokens = localStorage.getItem('spotifyTokens');
+      if (tokens && needsTokenRefresh()) {
+        try {
+          await refreshToken();
+          window.location.href = '/#/stats';
+          return;
+        } catch (error) {
+          // Clear invalid tokens
+          localStorage.removeItem('spotifyTokens');
+        }
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
   const handleLogin = () => {
-    // Use environment variable or fallback to production server
-    const authUrl = `${process.env.REACT_APP_AUTH_SERVER_URL}/api/login`;
-    
-    // For GitHub Pages, we need to specify the full redirect URL
-    const redirectTo = process.env.REACT_APP_FRONTEND_URL;
-    const scopes = 'user-read-private user-read-email user-top-read user-read-recently-played playlist-read-private user-follow-read user-read-playback-state user-library-read user-library-modify user-follow-modify';
-    
-    window.location.href = `${authUrl}?redirectTo=${encodeURIComponent(redirectTo)}&scope=${encodeURIComponent(scopes)}`;
+    // Simply redirect to login endpoint - server handles everything
+    window.location.href = `${process.env.REACT_APP_AUTH_SERVER_URL}/api/login`;
   };
 
   const features = [
@@ -31,6 +61,15 @@ const Landing = () => {
       description: 'Browse your saved songs, albums, and playlists in one place'
     }
   ];
+
+  if (isChecking) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Checking authentication...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="landing">

@@ -6,7 +6,7 @@ import { Home, BarChart3, Clock, Library, Menu, X, LogOut, User } from 'lucide-r
 import './Layout.css';
 
 const Layout = ({ children }) => {
-  const { handleLogout } = useAuth();
+  const { handleLogout } = useAuth(); // Use the handleLogout from AuthContext
   const { user, range, setRange } = useSpotify();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

@@ -220,3 +220,93 @@
     font-size: 1.125rem;
   }
 }
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+
+.column-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Increased gap for better spacing */
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+  position: relative;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  padding: 0.25rem; /* Add padding for better click area */
+}
+
+.info-icon:hover {
+  opacity: 1;
+}
+
+.info-tooltip {
+  position: absolute;
+  top: calc(100% + 8px); /* Add more space from icon */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.875rem; /* Increased padding */
+  background: var(--card-bg, #1a1a1a);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: normal;
+  width: 280px; /* Slightly wider */
+  z-index: 1000;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.8));
+}
+
+.genre-counts {
+  margin-left: auto;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  font-weight: normal;
+}
+
+.genre-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.genre-name {
+  flex: 1;
+}
+
+/* Ensure genre items don't have the old bar styles */
+.genres-list .genre-bar-container,
+.genres-list .genre-bar,
+.genres-list .genre-percentage {
+  display: none !important;
+}
+
+/* Add spacing between genre items */
+.genres-list .genre-item {
+  margin-bottom: 0.5rem;
+}
+
+.genres-list .genre-item:last-child {
+  margin-bottom: 0;
+}
+
+.column-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
