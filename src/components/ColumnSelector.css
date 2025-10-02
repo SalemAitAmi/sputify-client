@@ -33,19 +33,9 @@
   box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
 }
 
+/* Hide column selector on mobile */
 @media (max-width: 768px) {
   .column-selector {
-    margin-left: 0;
-    margin-top: 8px;
-  }
-
-  .column-label,
-  .column-select {
-    font-size: 12px;
-  }
-
-  .column-select {
-    padding: 3px 6px;
-    min-width: 50px;
+    display: none;
   }
 }

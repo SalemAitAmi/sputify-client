@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useSpotify } from '../contexts/SpotifyContext';
-import { Home, BarChart3, Clock, Library, Menu, X, LogOut, User } from 'lucide-react';
+import { Home, BarChart3, Clock, Library, RefreshCw, Menu, X, LogOut, User } from 'lucide-react';
 import './Layout.css';
 
 const Layout = ({ children }) => {
-  const { handleLogout } = useAuth(); // Use the handleLogout from AuthContext
+  const { handleLogout } = useAuth();
   const { user, range, setRange } = useSpotify();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -14,6 +14,7 @@ const Layout = ({ children }) => {
     { path: '/stats', label: 'Stats', icon: BarChart3 },
     { path: '/recently-played', label: 'Recently Played', icon: Clock },
     { path: '/library', label: 'Library', icon: Library },
+    { path: '/restore', label: 'Restore', icon: RefreshCw },
   ];
 
   const timeRanges = [

@@ -24,21 +24,24 @@
   align-items: center;
   gap: 8px;
   margin-top: 4px;
+  flex-wrap: wrap;
 }
 
 .track-count {
-  font-size: 12px;
+  font-size: clamp(0.688rem, 1.8vw, 0.75rem);
   color: var(--text-subdued);
+  white-space: nowrap;
 }
 
 .playlist-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: clamp(0.625rem, 1.5vw, 0.688rem);
   padding: 2px 8px;
   border-radius: 12px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .playlist-badge.collaborative {
@@ -53,8 +56,12 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .playlist-row {
+    padding: 8px;
+  }
+
   .track-count,
   .playlist-badge {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
 }

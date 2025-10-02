@@ -8,41 +8,29 @@
   white-space: nowrap;
   display: inline-block;
   min-width: 100%;
+  will-change: transform;
+  transform: translateX(0);
 }
 
+/* Remove any text truncation from children */
+.auto-scroll-text * {
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+}
+
+/* One-way scroll animation */
 .auto-scroll-text.scrolling {
-  animation: auto-scroll 8s linear infinite;
-  animation-delay: 2s;
+  animation: auto-scroll-oneway var(--scroll-duration, 10s) linear forwards;
+  animation-delay: 0s;
 }
 
-.auto-scroll-text.scrolling.paused {
-  animation-play-state: paused;
-}
-
-@keyframes auto-scroll {
+/* Scroll from start to end, then stay at end */
+@keyframes auto-scroll-oneway {
   0% {
     transform: translateX(0);
   }
-  25% {
-    transform: translateX(0);
-  }
-  75% {
-    transform: translateX(var(--scroll-distance, -50%));
-  }
   100% {
     transform: translateX(var(--scroll-distance, -50%));
-  }
-}
-
-/* Responsive animation adjustments */
-@media (max-width: 768px) {
-  .auto-scroll-text.scrolling {
-    animation-duration: 6s;
-  }
-}
-
-@media (max-width: 480px) {
-  .auto-scroll-text.scrolling {
-    animation-duration: 5s;
   }
 }

@@ -27,14 +27,33 @@ const Library = () => {
     playlists: 20,
   });
 
-  const [columns, setColumns] = useState({
-    songs: 1,
-    albums: 3,
-    artists: 3,
-    playlists: 3,
+  // Responsive default columns based on screen size
+  const [columns, setColumns] = useState(() => {
+    const isMobile = window.innerWidth <= 768;
+    return {
+      songs: 1,
+      albums: isMobile ? 1 : 3,
+      artists: isMobile ? 1 : 3,
+      playlists: isMobile ? 1 : 3,
+    };
   });
 
-  // Load saved songs
+  // Update columns on resize
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth <= 768;
+      setColumns(prev => ({
+        songs: 1,
+        albums: prev.albums === 1 && !isMobile ? 3 : isMobile ? 1 : prev.albums,
+        artists: prev.artists === 1 && !isMobile ? 3 : isMobile ? 1 : prev.artists,
+        playlists: prev.playlists === 1 && !isMobile ? 3 : isMobile ? 1 : prev.playlists,
+      }));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const loadSavedSongs = useCallback(async (append = false) => {
     if (loading.songs) return;
     
@@ -63,7 +82,6 @@ const Library = () => {
     }
   }, [fetchSavedTracks, loading.songs, fetchOffsets.songs]);
 
-  // Load saved albums
   const loadSavedAlbums = useCallback(async (append = false) => {
     if (loading.albums) return;
     
@@ -92,7 +110,6 @@ const Library = () => {
     }
   }, [fetchSavedAlbums, loading.albums, fetchOffsets.albums]);
 
-  // Load followed artists
   const loadFollowedArtists = useCallback(async (append = false) => {
     if (loading.artists) return;
     
@@ -120,7 +137,6 @@ const Library = () => {
     }
   }, [fetchFollowedArtists, loading.artists, metrics.lastArtistId]);
 
-  // Load user playlists
   const loadPlaylists = useCallback(async (append = false) => {
     if (loading.playlists) return;
     
@@ -149,14 +165,12 @@ const Library = () => {
     }
   }, [fetchUserPlaylists, loading.playlists, fetchOffsets.playlists]);
 
-  // Load more items
   const loadMore = useCallback((type) => {
     setDisplayCounts(prev => ({
       ...prev,
       [type]: prev[type] + 20,
     }));
 
-    // Trigger fetch if needed
     if (type === 'songs' && (!metrics.savedSongs || displayCounts.songs >= metrics.savedSongs.length)) {
       loadSavedSongs(true);
     } else if (type === 'albums' && (!metrics.savedAlbums || displayCounts.albums >= metrics.savedAlbums.length)) {
@@ -168,13 +182,12 @@ const Library = () => {
     }
   }, [displayCounts, metrics, loadSavedSongs, loadSavedAlbums, loadFollowedArtists, loadPlaylists]);
 
-  // Initial load for all tabs to get counts
   useEffect(() => {
     loadSavedSongs();
     loadSavedAlbums();
     loadFollowedArtists();
     loadPlaylists();
-  }, []); // Only run once on mount
+  }, []);
 
   const tabs = [
     { id: 'songs', label: 'Saved Songs', icon: Heart, count: metrics.totalSongs || 0 },

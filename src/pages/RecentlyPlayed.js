@@ -20,21 +20,37 @@ const RecentlyPlayed = () => {
     podcasts: 20,
   });
 
-  const [columns, setColumns] = useState({
-    tracks: 1,
-    artists: 3,
-    albums: 3,
-    podcasts: 3,
+  const [columns, setColumns] = useState(() => {
+    const isMobile = window.innerWidth <= 768;
+    return {
+      tracks: 1,
+      artists: isMobile ? 1 : 3,
+      albums: isMobile ? 1 : 3,
+      podcasts: isMobile ? 1 : 3,
+    };
   });
 
-  // Load recently played data
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth <= 768;
+      setColumns(prev => ({
+        tracks: 1,
+        artists: prev.artists === 1 && !isMobile ? 3 : isMobile ? 1 : prev.artists,
+        albums: prev.albums === 1 && !isMobile ? 3 : isMobile ? 1 : prev.albums,
+        podcasts: prev.podcasts === 1 && !isMobile ? 3 : isMobile ? 1 : prev.podcasts,
+      }));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const loadRecentlyPlayed = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetchRecentlyPlayed(50);
       const extracted = extractUniqueFromRecentlyPlayed(response.items);
       
-      // Fetch full artist details for the unique artists
       const artistIds = extracted.artists.slice(0, 50).map(a => a.id).filter(Boolean);
       let fullArtists = extracted.artists;
       
@@ -48,7 +64,6 @@ const RecentlyPlayed = () => {
           
           if (artistsResponse.ok) {
             const artistsData = await artistsResponse.json();
-            // Merge full artist data with play counts
             fullArtists = extracted.artists.map(extractedArtist => {
               const fullArtist = artistsData.artists.find(a => a.id === extractedArtist.id);
               return fullArtist ? { ...fullArtist, playCount: extractedArtist.playCount, lastPlayed: extractedArtist.lastPlayed } : extractedArtist;
@@ -72,7 +87,6 @@ const RecentlyPlayed = () => {
     }
   }, [fetchRecentlyPlayed]);
 
-  // Load more items
   const loadMore = useCallback((type) => {
     setDisplayCounts(prev => ({
       ...prev,
@@ -80,11 +94,8 @@ const RecentlyPlayed = () => {
     }));
   }, []);
 
-  // Initial load
   useEffect(() => {
     loadRecentlyPlayed();
-    
-    // Refresh every 5 minutes
     const interval = setInterval(loadRecentlyPlayed, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [loadRecentlyPlayed]);

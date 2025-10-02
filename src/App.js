@@ -2,11 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { SpotifyProvider } from './contexts/SpotifyContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { AnimationSyncProvider } from './contexts/AnimationSyncContext';
 import Layout from './components/Layout';
 import Landing from './pages/Landing';
 import Stats from './pages/Stats';
 import RecentlyPlayed from './pages/RecentlyPlayed';
 import Library from './pages/Library';
+import Restore from './pages/Restore';
 import { getHashParams, clearHashParams, getTokensFromServer } from './utils/auth';
 import './App.css';
 import './styles/shared.css';
@@ -19,11 +21,9 @@ function App() {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // Check for success/error in hash
         const hashParams = getHashParams();
         
         if (hashParams.success === 'true') {
-          // Get tokens from server cookies
           const tokens = await getTokensFromServer();
           if (tokens) {
             localStorage.setItem('spotifyTokens', JSON.stringify(tokens));
@@ -41,18 +41,14 @@ function App() {
           return;
         }
 
-        // Check for existing tokens in localStorage
         const storedTokens = localStorage.getItem('spotifyTokens');
         if (storedTokens) {
           try {
             const tokens = JSON.parse(storedTokens);
             
-            // Check if token is expired or needs refresh
             if (tokens.expiresAt - Date.now() > 5 * 60 * 1000) {
-              // Token is still valid
               setIsAuthenticated(true);
             } else {
-              // Token expired, clear and redirect to login
               localStorage.removeItem('spotifyTokens');
               setIsAuthenticated(false);
             }
@@ -81,10 +77,8 @@ function App() {
       console.error('Logout error:', error);
     }
     
-    // Clear tokens and mark as unauthenticated
     localStorage.removeItem('spotifyTokens');
     setIsAuthenticated(false);
-    // Force navigation to landing page
     window.location.href = window.location.origin + window.location.pathname + '#/';
   }, []);
 
@@ -101,24 +95,27 @@ function App() {
     <Router>
       <AuthProvider value={{ isAuthenticated, setIsAuthenticated, handleLogout }}>
         <SpotifyProvider>
-          <div className="App">
-            {!isAuthenticated ? (
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            ) : (
-              <Layout>
+          <AnimationSyncProvider>
+            <div className="App">
+              {!isAuthenticated ? (
                 <Routes>
-                  <Route path="/" element={<Navigate to="/stats" replace />} />
-                  <Route path="/stats" element={<Stats />} />
-                  <Route path="/recently-played" element={<RecentlyPlayed />} />
-                  <Route path="/library" element={<Library />} />
-                  <Route path="*" element={<Navigate to="/stats" replace />} />
+                  <Route path="/" element={<Landing />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
-              </Layout>
-            )}
-          </div>
+              ) : (
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/stats" replace />} />
+                    <Route path="/stats" element={<Stats />} />
+                    <Route path="/recently-played" element={<RecentlyPlayed />} />
+                    <Route path="/library" element={<Library />} />
+                    <Route path="/restore" element={<Restore />} />
+                    <Route path="*" element={<Navigate to="/stats" replace />} />
+                  </Routes>
+                </Layout>
+              )}
+            </div>
+          </AnimationSyncProvider>
         </SpotifyProvider>
       </AuthProvider>
     </Router>

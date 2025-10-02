@@ -1,4 +1,4 @@
-/* Grid System Overflow Prevention */
+/* Grid System Overflow Prevention with Responsive Units */
 
 /* Base grid containers */
 .tracks-container,
@@ -17,11 +17,14 @@
 .item-grid {
   display: grid;
   grid-template-columns: repeat(var(--columns, 3), minmax(0, 1fr));
-  gap: 16px;
+  gap: clamp(8px, 2vw, 16px);
   width: 100%;
   max-width: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
 /* Force grid children to respect boundaries */
@@ -45,6 +48,7 @@
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
+  flex: 1;
 }
 
 /* AutoScroll containers must have defined width */
@@ -52,31 +56,7 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-}
-
-/* Specific 1-column layout */
-[style*="--columns: 1"] .item-grid {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-/* Specific 2-column layout */
-[style*="--columns: 2"] .item-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-/* Specific 3-column layout */
-[style*="--columns: 3"] .item-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-/* Specific 4-column layout */
-[style*="--columns: 4"] .item-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-/* Specific 5-column layout */
-[style*="--columns: 5"] .item-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  box-sizing: border-box;
 }
 
 /* Recent item cards */
@@ -85,13 +65,8 @@
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-}
-
-/* Ensure proper flex item sizing */
-.item-image {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  padding: clamp(12px, 2.5vw, 16px);
+  min-height: clamp(100px, 20vw, 120px);
 }
 
 /* Playlist items special handling */
@@ -101,14 +76,34 @@
   overflow: hidden;
 }
 
-/* Prevent text from breaking layout */
-.item-name,
-.item-subtitle,
-.item-link {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* Mobile-specific grid adjustments */
+@media (max-width: 768px) {
+  .item-grid {
+    gap: 8px;
+  }
+
+  .item-row {
+    padding: 6px 4px;
+    gap: 8px;
+    min-height: 48px;
+  }
+
+  .recent-item-card {
+    padding: 12px;
+    min-height: 100px;
+  }
+}
+
+/* Ensure no horizontal overflow on any device */
+body,
+html,
+#root,
+.App {
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
 }

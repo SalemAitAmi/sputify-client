@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import SpotifyWebApi from 'spotify-web-api-js';
 import { useAuth } from './AuthContext';
-import { refreshToken, needsTokenRefresh } from '../utils/auth';
+import { refreshToken } from '../utils/auth';
+import { cacheManager } from '../utils/cache';
 
 const SpotifyContext = createContext(null);
 const spotifyApi = new SpotifyWebApi();
@@ -13,7 +14,6 @@ export const SpotifyProvider = ({ children }) => {
   const [error, setError] = useState('');
   const [range, setRange] = useState('long_term');
   const [metrics, setMetrics] = useState({});
-  const [fetchedMetrics, setFetchedMetrics] = useState(new Set());
 
   // Token management
   const [tokens, setTokens] = useState(() => {
@@ -24,7 +24,6 @@ export const SpotifyProvider = ({ children }) => {
   // Check if token is valid
   const isTokenValid = useCallback(() => {
     if (!tokens.accessToken || !tokens.expiresAt) return false;
-    // Add 5 minute buffer
     return tokens.expiresAt - Date.now() > 5 * 60 * 1000;
   }, [tokens]);
 
@@ -57,7 +56,6 @@ export const SpotifyProvider = ({ children }) => {
     } catch (err) {
       console.error('Failed to refresh token:', err);
       setError('Session expired. Please log in again.');
-      // Clear tokens on refresh failure
       localStorage.removeItem('spotifyTokens');
       window.location.href = window.location.origin + window.location.pathname + '#/';
       return false;
@@ -70,17 +68,11 @@ export const SpotifyProvider = ({ children }) => {
     
     const checkAndRefresh = async () => {
       if (!isTokenValid()) {
-        const success = await refreshAccessToken();
-        if (!success) {
-          console.error('Token refresh failed');
-        }
+        await refreshAccessToken();
       }
     };
 
-    // Check immediately
     checkAndRefresh();
-    
-    // Check every 5 minutes
     const interval = setInterval(checkAndRefresh, 5 * 60 * 1000);
     
     return () => clearInterval(interval);
@@ -114,10 +106,8 @@ export const SpotifyProvider = ({ children }) => {
     } catch (err) {
       console.error('Failed to fetch user data:', err);
       if (err.status === 401) {
-        // Token expired, try to refresh
         const success = await refreshAccessToken();
         if (success) {
-          // Retry the request
           try {
             const userData = await spotifyApi.getMe();
             setUser(userData);
@@ -134,16 +124,14 @@ export const SpotifyProvider = ({ children }) => {
     }
   }, [tokens.accessToken, refreshAccessToken]);
 
-  // API call wrapper to handle token refresh
+  // API call wrapper
   const makeApiCall = useCallback(async (apiMethod, ...args) => {
     try {
       return await apiMethod(...args);
     } catch (err) {
       if (err.status === 401) {
-        // Token expired, try to refresh
         const success = await refreshAccessToken();
         if (success) {
-          // Retry the request
           return await apiMethod(...args);
         }
       }
@@ -151,13 +139,19 @@ export const SpotifyProvider = ({ children }) => {
     }
   }, [refreshAccessToken]);
 
-  // Fetch top tracks
+  // Fetch top tracks with caching
   const fetchTopTracks = useCallback(async (limit = 50, offset = 0) => {
+    const cacheKey = `top_tracks_${range}_${limit}_${offset}`;
+    const cached = cacheManager.get(cacheKey, 10 * 60 * 1000); // 10 min cache
+    
+    if (cached) return cached;
+
     try {
       const response = await makeApiCall(
         spotifyApi.getMyTopTracks.bind(spotifyApi),
         { time_range: range, limit, offset }
       );
+      cacheManager.set(cacheKey, response);
       return response;
     } catch (err) {
       setError('Failed to fetch top tracks: ' + err.message);
@@ -165,13 +159,19 @@ export const SpotifyProvider = ({ children }) => {
     }
   }, [range, makeApiCall]);
 
-  // Fetch top artists
+  // Fetch top artists with caching
   const fetchTopArtists = useCallback(async (limit = 50, offset = 0) => {
+    const cacheKey = `top_artists_${range}_${limit}_${offset}`;
+    const cached = cacheManager.get(cacheKey, 10 * 60 * 1000);
+    
+    if (cached) return cached;
+
     try {
       const response = await makeApiCall(
         spotifyApi.getMyTopArtists.bind(spotifyApi),
         { time_range: range, limit, offset }
       );
+      cacheManager.set(cacheKey, response);
       return response;
     } catch (err) {
       setError('Failed to fetch top artists: ' + err.message);
@@ -179,12 +179,11 @@ export const SpotifyProvider = ({ children }) => {
     }
   }, [range, makeApiCall]);
 
-  // Fetch multiple artists by IDs (new method)
+  // Fetch multiple artists by IDs
   const fetchArtistsByIds = useCallback(async (artistIds) => {
     if (!artistIds || artistIds.length === 0) return { artists: [] };
     
     try {
-      // Spotify API allows max 50 artists per request
       const batches = [];
       for (let i = 0; i < artistIds.length; i += 50) {
         const batch = artistIds.slice(i, i + 50);
@@ -203,7 +202,6 @@ export const SpotifyProvider = ({ children }) => {
         )
       );
       
-      // Combine all results
       const allArtists = results.flatMap(r => r.artists || []);
       return { artists: allArtists };
     } catch (err) {
@@ -212,13 +210,19 @@ export const SpotifyProvider = ({ children }) => {
     }
   }, [makeApiCall]);
 
-  // Fetch recently played
+  // Fetch recently played with caching
   const fetchRecentlyPlayed = useCallback(async (limit = 50) => {
+    const cacheKey = `recently_played_${limit}`;
+    const cached = cacheManager.get(cacheKey, 2 * 60 * 1000); // 2 min cache
+    
+    if (cached) return cached;
+
     try {
       const response = await makeApiCall(
         spotifyApi.getMyRecentlyPlayedTracks.bind(spotifyApi),
         { limit }
       );
+      cacheManager.set(cacheKey, response);
       return response;
     } catch (err) {
       setError('Failed to fetch recently played: ' + err.message);
@@ -291,11 +295,15 @@ export const SpotifyProvider = ({ children }) => {
     }
   }, [isAuthenticated, tokens.accessToken, fetchUserData]);
 
-  // Clear metrics when range changes to force refetch
+  // Clear metrics cache when range changes
   useEffect(() => {
     setMetrics({});
-    setFetchedMetrics(new Set());
   }, [range]);
+
+  // Clear old caches on mount
+  useEffect(() => {
+    cacheManager.clearOld();
+  }, []);
 
   const value = {
     user,
@@ -305,20 +313,16 @@ export const SpotifyProvider = ({ children }) => {
     setRange,
     metrics,
     setMetrics,
-    fetchedMetrics,
-    setFetchedMetrics,
     spotifyApi,
-    // API methods
     fetchUserData,
     fetchTopTracks,
     fetchTopArtists,
-    fetchArtistsByIds, // New method
+    fetchArtistsByIds,
     fetchRecentlyPlayed,
     fetchSavedAlbums,
     fetchSavedTracks,
     fetchFollowedArtists,
     fetchUserPlaylists,
-    // Token methods
     refreshAccessToken,
     isTokenValid,
   };

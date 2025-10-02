@@ -2,8 +2,8 @@
 .item-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 8px;
+  gap: clamp(8px, 2vw, 12px);
+  padding: clamp(6px, 1.5vw, 10px) clamp(4px, 1vw, 8px);
   border-radius: 8px;
   transition: all 0.2s ease;
   width: 100%;
@@ -20,16 +20,16 @@
   min-width: 24px;
   color: var(--spotify-green);
   font-weight: 600;
-  font-size: 14px;
+  font-size: clamp(0.813rem, 2vw, 0.875rem);
   flex-shrink: 0;
 }
 
 .item-image {
-  width: 40px;
-  height: 40px;
+  flex-shrink: 0;
+  width: clamp(32px, 6vw, 40px);
+  height: clamp(32px, 6vw, 40px);
   object-fit: cover;
   border-radius: 4px;
-  flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -46,103 +46,48 @@
   overflow: hidden;
 }
 
-.item-name {
+/* Container for auto-scroll - don't truncate */
+.item-name,
+.item-subtitle {
   font-weight: 500;
   color: var(--text-primary);
-  font-size: 14px;
-  transition: color 0.2s ease;
+  font-size: clamp(0.813rem, 2vw, 0.875rem);
+  width: 100%;
+  min-width: 0;
+  /* Let AutoScrollText handle overflow */
 }
 
+.item-subtitle {
+  font-size: clamp(0.688rem, 1.8vw, 0.75rem);
+  color: var(--text-subdued);
+}
+
+/* Links inside auto-scroll should not be truncated */
 .item-link {
   text-decoration: none;
   color: inherit;
   transition: color 0.2s ease;
+  display: inline;
+  white-space: nowrap;
 }
 
 .item-link:hover {
   color: var(--spotify-green);
 }
 
-.item-subtitle {
-  font-size: 12px;
-  color: var(--text-subdued);
-}
-
 .played-at {
-  font-size: 12px;
+  font-size: clamp(0.688rem, 1.8vw, 0.75rem);
   color: var(--text-subdued);
   flex-shrink: 0;
   margin-left: auto;
-}
-
-/* Genre Item Styles */
-.genre-item {
-  padding: 14px 8px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  min-height: 48px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.genre-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.genre-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.genre-name {
-  flex: 1;
-  font-weight: 500;
-  color: var(--text-primary);
-  font-size: 14px;
-  text-transform: capitalize;
-}
-
-.genre-percentage {
-  font-size: 12px;
-  color: var(--spotify-green);
-  font-weight: 600;
-}
-
-.genre-bar-container {
-  width: 100%;
-  height: 6px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.genre-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--spotify-green) 0%, var(--gradient-end) 100%);
-  border-radius: 3px;
-  transition: width 0.3s ease;
+  white-space: nowrap;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .item-image {
-    width: 32px;
-    height: 32px;
-  }
-
-  .item-name {
-    font-size: 13px;
-  }
-
-  .item-subtitle {
-    font-size: 11px;
-  }
-
   .item-row {
-    padding: 6px;
-    gap: 10px;
+    padding: 6px 4px;
+    gap: 8px;
+    min-height: 48px;
   }
 }

@@ -21,6 +21,8 @@
   flex: 1;
   font-weight: 500;
   color: var(--text-primary);
+  text-transform: capitalize;
+  min-width: 0;
 }
 
 .genre-stats {
@@ -36,11 +38,13 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.875rem;
+  white-space: nowrap;
 }
 
 .genre-stat-icon {
   color: var(--accent-color, #1db954);
   opacity: 0.7;
+  flex-shrink: 0;
 }
 
 .genre-stat-value {
@@ -58,13 +62,7 @@
   height: 16px;
   background-color: var(--border-color, rgba(255, 255, 255, 0.1));
   margin: 0 0.25rem;
-}
-
-/* Remove old percentage bar styles if they exist */
-.genre-bar-container,
-.genre-bar,
-.genre-percentage {
-  display: none !important;
+  flex-shrink: 0;
 }
 
 /* Responsive adjustments */
