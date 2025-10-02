@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/sputify-client/static/css/main.1fb7c08d.css",
-    "main.js": "/sputify-client/static/js/main.c2b3f4ec.js",
+    "main.css": "/sputify-client/static/css/main.def57b4b.css",
+    "main.js": "/sputify-client/static/js/main.c1413213.js",
     "index.html": "/sputify-client/index.html",
-    "main.1fb7c08d.css.map": "/sputify-client/static/css/main.1fb7c08d.css.map",
-    "main.c2b3f4ec.js.map": "/sputify-client/static/js/main.c2b3f4ec.js.map"
+    "main.def57b4b.css.map": "/sputify-client/static/css/main.def57b4b.css.map",
+    "main.c1413213.js.map": "/sputify-client/static/js/main.c1413213.js.map"
   },
   "entrypoints": [
-    "static/css/main.1fb7c08d.css",
-    "static/js/main.c2b3f4ec.js"
+    "static/css/main.def57b4b.css",
+    "static/js/main.c1413213.js"
   ]
 }
